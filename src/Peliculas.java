@@ -75,24 +75,23 @@ public class Peliculas {
     }
 
     //Metodos
-        public boolean rentar() {
-            if (cantidadDisponible > 0) {
-                cantidadDisponible--;
-                vecesRentada++;
-                return true;
-            }
-            return false;
+    public boolean rentar() {
+        if (cantidadDisponible > 0) {
+            cantidadDisponible--;
+            vecesRentada++;
+            return true;
         }
-
-        public void devolver() {
-            cantidadDisponible++;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[%s] %s (%d min) - Género: %s - Disponibles:" +
-                            " %d - Veces rentada: %d",
-                    codigo, titulo, duracion, genero, cantidadDisponible, vecesRentada);
-        }
+        return false;
     }
+
+    public void devolver() {
+        cantidadDisponible++;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s] %s (%.0f min) - Género: %s - Disponibles: %d - Veces rentada: %d",
+                codigo, titulo, duracion, genero, cantidadDisponible, vecesRentada);
+    }
+}
 
