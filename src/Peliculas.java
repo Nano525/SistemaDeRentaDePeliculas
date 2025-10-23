@@ -90,7 +90,8 @@ public class Peliculas {
 
         @Override
         public String toString() {
-            return String.format("[%s] %s (%d min) - Género: %s - Disponibles: %d - Veces rentada: %d",
+            return String.format("[%s] %s (%d min) - Género: %s - Disponibles:" +
+                            " %d - Veces rentada: %d",
                     codigo, titulo, duracion, genero, cantidadDisponible, vecesRentada);
         }
     }
