@@ -85,3 +85,90 @@ public class Main {
         }
         return true;
     }
+
+    private static void agregarPelicula() {
+        System.out.println("\n--- AGREGAR PELÍCULA ---");
+        System.out.print("Código de la película: ");
+        String codigo = scanner.nextLine();
+
+        if (sistema.existePelicula(codigo)) {
+            System.out.println("Error: Ya existe una película con ese código.");
+            return;
+        }
+
+        System.out.print("Título: ");
+        String titulo = scanner.nextLine();
+
+        System.out.print("Duración (en minutos): ");
+        double duracion = Double.parseDouble(scanner.nextLine());
+
+        System.out.print("Cantidad disponible: ");
+        int cantidad = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Género: ");
+        String genero = scanner.nextLine();
+
+        sistema.agregarPelicula(codigo, titulo, duracion, cantidad, genero);
+    }
+
+    private static void eliminarPelicula() {
+        System.out.println("\n--- ELIMINAR PELÍCULA ---");
+        System.out.print("Código de la película a eliminar: ");
+        String codigo = scanner.nextLine();
+
+        if (!sistema.existePelicula(codigo)) {
+            System.out.println("Error: No existe una película con ese código.");
+            return;
+        }
+
+        Peliculas pelicula = sistema.obtenerPelicula(codigo);
+        System.out.println("Película a eliminar: " + pelicula.getTitulo());
+        System.out.print("¿Está seguro? (s/n): ");
+        String confirmacion = scanner.nextLine().toLowerCase();
+
+        if (confirmacion.equals("s") || confirmacion.equals("si")) {
+            sistema.eliminarPelicula(codigo);
+        } else {
+            System.out.println("Operación cancelada.");
+        }
+    }
+
+    private static void rentarPelicula() {
+        System.out.println("\n--- RENTAR PELÍCULA ---");
+        System.out.print("Código de la película a rentar: ");
+        String codigo = scanner.nextLine();
+
+        if (!sistema.existePelicula(codigo)) {
+            System.out.println("Error: No existe una película con ese código.");
+            return;
+        }
+
+        sistema.rentarPelicula(codigo);
+    }
+
+    private static void devolverPelicula() {
+        System.out.println("\n--- DEVOLVER PELÍCULA ---");
+        System.out.print("Código de la película a devolver: ");
+        String codigo = scanner.nextLine();
+
+        if (!sistema.existePelicula(codigo)) {
+            System.out.println("Error: No existe una película con ese código.");
+            return;
+        }
+
+        sistema.devolverPelicula(codigo);
+    }
+
+    private static void agregarDatosPrueba() {
+        System.out.println("Agregando películas de prueba...");
+        sistema.agregarPelicula("P001", "El Padrino", 175, 3, "Drama");
+        sistema.agregarPelicula("P002", "Titanic", 194, 2, "Romance");
+        sistema.agregarPelicula("P003", "Avatar", 162, 4, "Ciencia Ficción");
+        sistema.agregarPelicula("P004", "Jurassic Park", 127, 2, "Aventura");
+        sistema.agregarPelicula("P005", "Toy Story", 81, 3, "Animación");
+        sistema.agregarPelicula("P006", "The Dark Knight", 152, 2, "Acción");
+        sistema.agregarPelicula("P007", "Forrest Gump", 142, 1, "Drama");
+        sistema.agregarPelicula("P008", "Inception", 148, 3, "Ciencia Ficción");
+        System.out.println("Películas de prueba agregadas exitosamente.\n");
+    }
+}
