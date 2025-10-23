@@ -166,4 +166,49 @@ public class SistemaRentaPeliculas {
             System.out.println("No hay películas en el catálogo.");
             return;
         }
-   
+
+        Map<String, List<Peliculas>> peliculasPorGenero = new HashMap<>();
+
+        // Agrupar películas por género
+        for (Peliculas pelicula : catalogo.values()) {
+            String genero = pelicula.getGenero();
+            peliculasPorGenero.computeIfAbsent(genero, generoKey -> new ArrayList<>()).add(pelicula);
+        }
+
+        // Mostrar por género
+        for (Map.Entry<String, List<Peliculas>> entry : peliculasPorGenero.entrySet()) {
+            System.out.println("\n--- Género: " + entry.getKey() + " ---");
+            for (Peliculas pelicula : entry.getValue()) {
+                System.out.println("  " + pelicula.getTitulo() + " (" + pelicula.getCodigo() + ")");
+            }
+        }
+    }
+
+    // Método para mostrar el catálogo completo
+    public void mostrarCatalogo() {
+        System.out.println("\n=== CATÁLOGO COMPLETO ===");
+        if (catalogo.isEmpty()) {
+            System.out.println("El catálogo está vacío.");
+            return;
+        }
+
+        for (Peliculas pelicula : catalogo.values()) {
+            System.out.println(pelicula);
+        }
+    }
+
+    // Método para verificar si existe una película
+    public boolean existePelicula(String codigo) {
+        return catalogo.containsKey(codigo);
+    }
+
+    // Método para obtener una película por código
+    public Peliculas obtenerPelicula(String codigo) {
+        return catalogo.get(codigo);
+    }
+
+    // Método para cerrar el scanner
+    public void cerrarSistema() {
+        scanner.close();
+    }
+}
