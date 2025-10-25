@@ -1,9 +1,15 @@
 import java.util.Scanner;
 
+/**
+ * Clase principal que maneja la interfaz de usuario del Sistema de Renta de Películas
+ */
 public class Main {
-    private static SistemaRentaPeliculas sistema;
-    private static Scanner scanner;
+    private static SistemaRentaPeliculas sistema; // Instancia del sistema de rentas
+    private static Scanner scanner; // Scanner para entrada de datos
 
+    /**
+     * Método principal que inicia la aplicación
+     */
     public static void main(String[] args) {
         sistema = new SistemaRentaPeliculas();
         scanner = new Scanner(System.in);
@@ -11,6 +17,7 @@ public class Main {
         // Agregar algunas películas de prueba
         agregarDatosPrueba();
 
+        // Bucle principal del menú
         boolean continuar = true;
         while (continuar) {
             mostrarMenu();
@@ -22,6 +29,9 @@ public class Main {
         scanner.close();
     }
 
+    /**
+     * Muestra el menú principal con todas las opciones disponibles
+     */
     private static void mostrarMenu() {
         System.out.println("\n=== SISTEMA DE RENTA DE PELÍCULAS ===");
         System.out.println("1. Agregar película al catálogo");
@@ -38,64 +48,75 @@ public class Main {
         System.out.print("Seleccione una opción: ");
     }
 
+    /**
+     * Lee la opción seleccionada por el usuario con manejo de errores
+     */
     private static int leerOpcion() {
         try {
             return Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            return -1;
+            return -1; // Retorna -1 si la entrada no es un número válido
         }
     }
 
+    /**
+     * Procesa la opción seleccionada por el usuario
+     */
     private static boolean procesarOpcion(int opcion) {
         switch (opcion) {
             case 1:
-                agregarPelicula();
+                agregarPelicula(); // Agregar nueva película al catálogo
                 break;
             case 2:
-                eliminarPelicula();
+                eliminarPelicula(); // Eliminar película del catálogo
                 break;
             case 3:
-                rentarPelicula();
+                rentarPelicula(); // Rentar una película disponible
                 break;
             case 4:
-                devolverPelicula();
+                devolverPelicula(); // Devolver una película rentada
                 break;
             case 5:
-                sistema.mostrarCatalogo();
+                sistema.mostrarCatalogo(); // Mostrar todo el catálogo
                 break;
             case 6:
-                sistema.reportePeliculasDisponibles();
+                sistema.reportePeliculasDisponibles(); // Reporte de películas disponibles
                 break;
             case 7:
-                sistema.reportePeliculasRentadas();
+                sistema.reportePeliculasRentadas(); // Reporte de películas rentadas
                 break;
             case 8:
-                sistema.reportePeliculasMasRentadas();
+                sistema.reportePeliculasMasRentadas(); // Reporte de películas más populares
                 break;
             case 9:
-                sistema.reportePeliculasMenosRentadas();
+                sistema.reportePeliculasMenosRentadas(); // Reporte de películas menos populares
                 break;
             case 10:
-                sistema.reportePeliculasPorGenero();
+                sistema.reportePeliculasPorGenero(); // Reporte clasificado por género
                 break;
             case 0:
-                return false;
+                return false; // Salir del sistema
             default:
                 System.out.println("Opción inválida. Por favor, seleccione una opción válida.");
         }
-        return true;
+        return true; // Continuar con el menú
     }
 
+    /**
+     * Permite al usuario agregar una nueva película al catálogo
+     */
     private static void agregarPelicula() {
         System.out.println("\n--- AGREGAR PELÍCULA ---");
         System.out.print("Código de la película: ");
         String codigo = scanner.nextLine();
 
+        // Verificar si ya existe una película con ese código
         if (sistema.existePelicula(codigo)) {
             System.out.println("Error: Ya existe una película con ese código.");
             return;
         }
 
+        // Solicitar datos de la película
         System.out.print("Título: ");
         String titulo = scanner.nextLine();
 
@@ -108,24 +129,31 @@ public class Main {
         System.out.print("Género: ");
         String genero = scanner.nextLine();
 
+        // Agregar la película al sistema
         sistema.agregarPelicula(codigo, titulo, duracion, cantidad, genero);
     }
 
+    /**
+     * Permite al usuario eliminar una película del catálogo con confirmación
+     */
     private static void eliminarPelicula() {
         System.out.println("\n--- ELIMINAR PELÍCULA ---");
         System.out.print("Código de la película a eliminar: ");
         String codigo = scanner.nextLine();
 
+        // Verificar si existe la película
         if (!sistema.existePelicula(codigo)) {
             System.out.println("Error: No existe una película con ese código.");
             return;
         }
 
+        // Mostrar información de la película y solicitar confirmación
         Peliculas pelicula = sistema.obtenerPelicula(codigo);
         System.out.println("Película a eliminar: " + pelicula.getTitulo());
         System.out.print("¿Está seguro? (s/n): ");
         String confirmacion = scanner.nextLine().toLowerCase();
 
+        // Proceder con la eliminación si el usuario confirma
         if (confirmacion.equals("s") || confirmacion.equals("si")) {
             sistema.eliminarPelicula(codigo);
         } else {
@@ -133,34 +161,48 @@ public class Main {
         }
     }
 
+    /**
+     * Permite al usuario rentar una película disponible
+     */
     private static void rentarPelicula() {
         System.out.println("\n--- RENTAR PELÍCULA ---");
         System.out.print("Código de la película a rentar: ");
         String codigo = scanner.nextLine();
 
+        // Verificar si existe la película
         if (!sistema.existePelicula(codigo)) {
             System.out.println("Error: No existe una película con ese código.");
             return;
         }
 
+        // Intentar rentar la película
         sistema.rentarPelicula(codigo);
     }
 
+    /**
+     * Permite al usuario devolver una película rentada
+     */
     private static void devolverPelicula() {
         System.out.println("\n--- DEVOLVER PELÍCULA ---");
         System.out.print("Código de la película a devolver: ");
         String codigo = scanner.nextLine();
 
+        // Verificar si existe la película
         if (!sistema.existePelicula(codigo)) {
             System.out.println("Error: No existe una película con ese código.");
             return;
         }
 
+        // Devolver la película
         sistema.devolverPelicula(codigo);
     }
 
+    /**
+     * Agrega películas de prueba al sistema para demostración
+     */
     private static void agregarDatosPrueba() {
         System.out.println("Agregando películas de prueba...");
+        // Agregar películas de diferentes géneros para pruebas
         sistema.agregarPelicula("P001", "El Padrino", 175, 3, "Drama");
         sistema.agregarPelicula("P002", "Titanic", 194, 2, "Romance");
         sistema.agregarPelicula("P003", "Avatar", 162, 4, "Ciencia Ficción");

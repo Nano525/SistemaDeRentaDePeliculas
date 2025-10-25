@@ -1,14 +1,19 @@
+/**
+ * Clase que representa una película en el sistema de rentas
+ * Contiene toda la información y funcionalidad de una película
+ */
 public class Peliculas {
-    //variables privadas
-    private String codigo;
-    private String titulo;
-    private double duracion;
-    private int cantidadDisponible;
-    private int vecesRentada;
-    private String genero;
+    // Atributos privados de la película
+    private String codigo; // Código único identificador
+    private String titulo; // Título de la película
+    private double duracion; // Duración en minutos
+    private int cantidadDisponible; // Copias disponibles para renta
+    private int vecesRentada; // Contador de veces que ha sido rentada
+    private String genero; // Género de la película
 
-    //constructor
-
+    /**
+     * Constructor de la clase Peliculas
+     */
     public Peliculas(String codigo,
                      String titulo,
                      double duracion,
@@ -23,8 +28,7 @@ public class Peliculas {
         this.genero = genero;
     }
 
-    //getters y setters
-
+    // Métodos getters y setters para acceso a los atributos
 
     public String getGenero() {
         return genero;
@@ -74,20 +78,30 @@ public class Peliculas {
         this.vecesRentada = vecesRentada;
     }
 
-    //Metodos
+    // Métodos de funcionalidad de la película
+
+    /**
+     * Intenta rentar una copia de la película
+     */
     public boolean rentar() {
         if (cantidadDisponible > 0) {
-            cantidadDisponible--;
-            vecesRentada++;
+            cantidadDisponible--; // Disminuir copias disponibles
+            vecesRentada++; // Incrementar contador de rentas
             return true;
         }
-        return false;
+        return false; // No hay copias disponibles
     }
 
+    /**
+     * Devuelve una copia rentada de la película
+     */
     public void devolver() {
-        cantidadDisponible++;
+        cantidadDisponible++; // Aumentar copias disponibles
     }
 
+    /**
+     * Representación en texto de la película
+     */
     @Override
     public String toString() {
         return String.format("[%s] %s (%.0f min) - Género: %s - Disponibles: %d - Veces rentada: %d",

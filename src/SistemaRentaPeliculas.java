@@ -1,59 +1,78 @@
 import java.util.*;
 
+/**
+ * Clase principal que maneja la lógica del sistema de renta de películas
+ * Contiene el catálogo y todas las operaciones del negocio
+ */
 public class SistemaRentaPeliculas {
-    private Map<String, Peliculas> catalogo;
-    private Map<String, Integer> peliculasRentadas;
-    private Scanner scanner;
+    private Map<String, Peliculas> catalogo; // Catálogo de películas (código -> película)
+    private Map<String, Integer> peliculasRentadas; // Contador de películas rentadas
+    private Scanner scanner; // Scanner para entrada de datos
 
+    /**
+     * Constructor que inicializa las estructuras de datos del sistema
+     */
     public SistemaRentaPeliculas() {
-        this.catalogo = new HashMap<>();
-        this.peliculasRentadas = new HashMap<>();
+        this.catalogo = new HashMap<>(); // Inicializar catálogo vacío
+        this.peliculasRentadas = new HashMap<>(); // Inicializar contador de rentas
         this.scanner = new Scanner(System.in);
     }
 
-    // Método para agregar película al catálogo
+    /**
+     * Agrega una nueva película al catálogo del sistema
+     */
     public boolean agregarPelicula(String codigo, String titulo, double duracion, 
                                  int cantidadDisponible, String genero) {
+        // Verificar si ya existe una película con ese código
         if (catalogo.containsKey(codigo)) {
             System.out.println("Error: Ya existe una película con el código " + codigo);
             return false;
         }
         
+        // Crear nueva película y agregarla al catálogo
         Peliculas pelicula = new Peliculas(codigo, titulo, duracion, cantidadDisponible, 0, genero);
         catalogo.put(codigo, pelicula);
         System.out.println("Película agregada exitosamente al catálogo.");
         return true;
     }
 
-    // Método para eliminar película del catálogo
+    /**
+     * Elimina una película del catálogo del sistema
+     */
     public boolean eliminarPelicula(String codigo) {
+        // Verificar si existe la película
         if (!catalogo.containsKey(codigo)) {
             System.out.println("Error: No existe una película con el código " + codigo);
             return false;
         }
         
-        // Verificar si hay copias rentadas
+        // Verificar si hay copias rentadas (no se puede eliminar si hay rentas activas)
         if (peliculasRentadas.containsKey(codigo) && peliculasRentadas.get(codigo) > 0) {
             System.out.println("Error: No se puede eliminar la película porque tiene copias rentadas.");
             return false;
         }
         
+        // Eliminar película del catálogo y contador de rentas
         catalogo.remove(codigo);
         peliculasRentadas.remove(codigo);
         System.out.println("Película eliminada exitosamente del catálogo.");
         return true;
     }
 
-    // Método para rentar una película
+    /**
+     * Renta una película del catálogo
+     */
     public boolean rentarPelicula(String codigo) {
+        // Verificar si existe la película
         if (!catalogo.containsKey(codigo)) {
             System.out.println("Error: No existe una película con el código " + codigo);
             return false;
         }
 
         Peliculas pelicula = catalogo.get(codigo);
+        // Intentar rentar la película
         if (pelicula.rentar()) {
-            // Actualizar contador de rentas
+            // Actualizar contador de rentas en el sistema
             peliculasRentadas.put(codigo, peliculasRentadas.getOrDefault(codigo, 0) + 1);
             System.out.println("Película rentada exitosamente: " + pelicula.getTitulo());
             return true;
@@ -63,23 +82,28 @@ public class SistemaRentaPeliculas {
         }
     }
 
-    // Método para devolver una película
+    /**
+     * Devuelve una película rentada al catálogo
+     */
     public boolean devolverPelicula(String codigo) {
+        // Verificar si existe la película
         if (!catalogo.containsKey(codigo)) {
             System.out.println("Error: No existe una película con el código " + codigo);
             return false;
         }
 
+        // Verificar si hay copias rentadas de esta película
         if (!peliculasRentadas.containsKey(codigo) || peliculasRentadas.get(codigo) <= 0) {
             System.out.println("Error: No hay copias rentadas de esta película.");
             return false;
         }
 
+        // Devolver la película y actualizar contadores
         Peliculas pelicula = catalogo.get(codigo);
-        pelicula.devolver();
-        peliculasRentadas.put(codigo, peliculasRentadas.get(codigo) - 1);
+        pelicula.devolver(); // Aumentar copias disponibles
+        peliculasRentadas.put(codigo, peliculasRentadas.get(codigo) - 1); // Disminuir contador de rentas
 
-        // Si no hay más copias rentadas, eliminar de la lista
+        // Si no hay más copias rentadas, eliminar de la lista de rentadas
         if (peliculasRentadas.get(codigo) == 0) {
             peliculasRentadas.remove(codigo);
         }
@@ -88,7 +112,9 @@ public class SistemaRentaPeliculas {
         return true;
     }
 
-    // Reporte: Películas disponibles para renta
+    /**
+     * Genera reporte de películas disponibles para renta
+     */
     public void reportePeliculasDisponibles() {
         System.out.println("\n=== PELÍCULAS DISPONIBLES PARA RENTA ===");
         if (catalogo.isEmpty()) {
@@ -97,6 +123,7 @@ public class SistemaRentaPeliculas {
         }
 
         boolean hayDisponibles = false;
+        // Recorrer todas las películas y mostrar solo las disponibles
         for (Peliculas pelicula : catalogo.values()) {
             if (pelicula.getCantidadDisponible() > 0) {
                 System.out.println(pelicula);
@@ -109,7 +136,9 @@ public class SistemaRentaPeliculas {
         }
     }
 
-    // Reporte: Películas actualmente rentadas
+    /**
+     * Genera reporte de películas actualmente rentadas
+     */
     public void reportePeliculasRentadas() {
         System.out.println("\n=== PELÍCULAS ACTUALMENTE RENTADAS ===");
         if (peliculasRentadas.isEmpty()) {
@@ -117,6 +146,7 @@ public class SistemaRentaPeliculas {
             return;
         }
 
+        // Mostrar películas con copias rentadas
         for (Map.Entry<String, Integer> entry : peliculasRentadas.entrySet()) {
             String codigo = entry.getKey();
             int cantidadRentada = entry.getValue();
@@ -125,7 +155,9 @@ public class SistemaRentaPeliculas {
         }
     }
 
-    // Reporte: Películas más rentadas
+    /**
+     * Genera reporte de películas más rentadas (ordenadas por popularidad)
+     */
     public void reportePeliculasMasRentadas() {
         System.out.println("\n=== PELÍCULAS MÁS RENTADAS ===");
         if (catalogo.isEmpty()) {
@@ -133,9 +165,11 @@ public class SistemaRentaPeliculas {
             return;
         }
 
+        // Crear lista y ordenar por número de rentas (descendente)
         List<Peliculas> peliculas = new ArrayList<>(catalogo.values());
         peliculas.sort((p1, p2) -> Integer.compare(p2.getVecesRentada(), p1.getVecesRentada()));
 
+        // Mostrar solo películas que han sido rentadas al menos una vez
         for (Peliculas pelicula : peliculas) {
             if (pelicula.getVecesRentada() > 0) {
                 System.out.println(pelicula.getTitulo() + " - Veces rentada: " + pelicula.getVecesRentada());
@@ -143,7 +177,9 @@ public class SistemaRentaPeliculas {
         }
     }
 
-    // Reporte: Películas menos rentadas
+    /**
+     * Genera reporte de películas menos rentadas (ordenadas por menor popularidad)
+     */
     public void reportePeliculasMenosRentadas() {
         System.out.println("\n=== PELÍCULAS MENOS RENTADAS ===");
         if (catalogo.isEmpty()) {
@@ -151,15 +187,19 @@ public class SistemaRentaPeliculas {
             return;
         }
 
+        // Crear lista y ordenar por número de rentas (ascendente)
         List<Peliculas> peliculas = new ArrayList<>(catalogo.values());
         peliculas.sort((p1, p2) -> Integer.compare(p1.getVecesRentada(), p2.getVecesRentada()));
 
+        // Mostrar todas las películas ordenadas por menor número de rentas
         for (Peliculas pelicula : peliculas) {
             System.out.println(pelicula.getTitulo() + " - Veces rentada: " + pelicula.getVecesRentada());
         }
     }
 
-    // Reporte: Películas clasificadas por género
+    /**
+     * Genera reporte de películas clasificadas por género
+     */
     public void reportePeliculasPorGenero() {
         System.out.println("\n=== PELÍCULAS CLASIFICADAS POR GÉNERO ===");
         if (catalogo.isEmpty()) {
@@ -167,6 +207,7 @@ public class SistemaRentaPeliculas {
             return;
         }
 
+        // Mapa para agrupar películas por género
         Map<String, List<Peliculas>> peliculasPorGenero = new HashMap<>();
 
         // Agrupar películas por género
@@ -175,7 +216,7 @@ public class SistemaRentaPeliculas {
             peliculasPorGenero.computeIfAbsent(genero, generoKey -> new ArrayList<>()).add(pelicula);
         }
 
-        // Mostrar por género
+        // Mostrar películas agrupadas por género
         for (Map.Entry<String, List<Peliculas>> entry : peliculasPorGenero.entrySet()) {
             System.out.println("\n--- Género: " + entry.getKey() + " ---");
             for (Peliculas pelicula : entry.getValue()) {
@@ -184,7 +225,9 @@ public class SistemaRentaPeliculas {
         }
     }
 
-    // Método para mostrar el catálogo completo
+    /**
+     * Muestra el catálogo completo de películas
+     */
     public void mostrarCatalogo() {
         System.out.println("\n=== CATÁLOGO COMPLETO ===");
         if (catalogo.isEmpty()) {
@@ -192,22 +235,29 @@ public class SistemaRentaPeliculas {
             return;
         }
 
+        // Mostrar todas las películas del catálogo
         for (Peliculas pelicula : catalogo.values()) {
             System.out.println(pelicula);
         }
     }
 
-    // Método para verificar si existe una película
+    /**
+     * Verifica si existe una película con el código dado
+     */
     public boolean existePelicula(String codigo) {
         return catalogo.containsKey(codigo);
     }
 
-    // Método para obtener una película por código
+    /**
+     * Obtiene una película por su código
+     */
     public Peliculas obtenerPelicula(String codigo) {
         return catalogo.get(codigo);
     }
 
-    // Método para cerrar el scanner
+    /**
+     * Cierra el scanner del sistema
+     */
     public void cerrarSistema() {
         scanner.close();
     }
